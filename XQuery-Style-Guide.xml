@@ -1,0 +1,1946 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://docbook.org/xml/5.1/rng/docbook.rng" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="http://docbook.org/xml/5.1/sch/docbook.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<article
+    xmlns="http://docbook.org/ns/docbook"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    version="5.1">
+    <info>
+        <title>XQuery Style Conventions</title>
+        <author>
+            <orgname>xqDoc</orgname>
+        </author>
+        <author>
+            <personname>
+                <firstname>Loren</firstname>
+                <surname>Cahlander</surname>
+            </personname>
+        </author>
+    </info>
+    <section>
+        <title>Introduction</title>
+        <section>
+            <title>Why Have Style Conventions</title>
+            <para>Style conventions are important for a number of reasons:</para>
+            <itemizedlist>
+                <listitem>
+                    <para>Common style conventions will decrease the long-term maintenance cost associated with XQuery modules.</para>
+                </listitem>
+                <listitem>
+                    <para>Hardly any XQuery module will be maintained for its whole life by the original author.</para>
+                </listitem>
+                <listitem>
+                    <para>Style conventions improve the readability of the XQuery modules, allowing everyone to understand the XQuery more quickly and thoroughly.</para>
+                </listitem>
+            </itemizedlist>
+            <para>The style conventions proposed in this document will not ensure the XQuery authored for one XQuery engine will work on a different XQuery engine. However, the migration to a different XQuery engine can be simplified by adhering to a consistent style when authoring XQuery modules.</para>
+            <para>Since the XQuery language is fully composable, any of the expressions can be nested within another, it is an insurmountable task to completely define style guidelines that will cover all cases. Instead, we have opted to offer general guidelines that should cover the more common scenarios.</para>
+        </section>
+        <section>
+            <title>Acknowledgments</title>
+            <para>This document reflects XQuery Style Conventions for the <citerefentry>
+                    <refentrytitle>November 2005 W3C XQuery Language Candidate Recommendation</refentrytitle>
+                </citerefentry> . When XQuery becomes an official recommendation and as we receive feedback from the XQuery development commnity, this document will be updated as appropriate.</para>
+            <para>Many of the concepts and guidelines contained in this document have been borrowed with permission from the <citerefentry>
+                    <refentrytitle>Code Conventions for the Java Programming Language</refentrytitle>
+                </citerefentry>, Copyright 1995-1999 Sun Microsystems, Inc. All rights reserved. Rather than re-inventing the wheel, we felt it would be best to leverage a familiar tested and proven style that has been widely embraced.</para>
+        </section>
+    </section>
+    <section>
+        <title>Module Organization</title>
+        <para>There are two basic types of module organizations for XQuery, library and main modules. The guidelines for each module type will be presented in the following sections. Appendixes A and B offer representative examples for both a main module and library module that follow the style guidelines described in this document. For complete details on XQuery main modules and library modules, we suggest reviewing the BNF for XQuery available from the W3C web site.</para>
+        <section>
+            <title>Library Modules</title>
+            <para>As a general rule, an XQuery library module will normally contain one or more XQuery functions and global variable declarations. All of these functions and variables should be related together in some meaningful fashion (related processing, support one another, etc.)</para>
+            <para>The XQuery library module should contain the sections identified below in the listed order.</para>
+            <orderedlist>
+                <listitem>
+                    <para>XQuery version declaration</para>
+                </listitem>
+                <listitem>
+                    <para>Beginning comments</para>
+                </listitem>
+                <listitem>
+                    <para>Module declaration</para>
+                </listitem>
+                <listitem>
+                    <para>Prolog</para>
+                </listitem>
+            </orderedlist>
+            <section>
+                <title>XQuery version declaration</title>
+                <para>All library modules should explicitly indicate the version of the XQuery specification that they adhere to as well as any optional special encoding information.</para>
+                <informalexample>
+                    <programlisting>xquery version "1.0";
+
+or
+
+xquery version "1.0" encoding "UTF-8";</programlisting>
+                </informalexample>
+            </section>
+            <section>
+                <title>Beginning comments</title>
+                <para>All library modules should begin with an XQuery-style comment that lists the module name, version information, date, copyright, any vendor specific proprietary extension dependencies, XQuery specification and a module overview. See section 4 for more information on XQuery commenting style.</para>
+                <informalexample>
+                    <programlisting>(:
+
+ : Module Name: Sample Library Module
+
+ : Module Version: 1.0
+
+ : Date: January 6, 2006
+
+ : Copyright: xqDoc.org …
+
+ : Proprietary XQuery Extensions Used: None
+
+ : XQuery Specification: November 2005
+
+ : Module Overview: This is a sample library module …
+
+ :)</programlisting>
+                </informalexample>
+            </section>
+            <section>
+                <title>Module declaration</title>
+                <para>All libraries must provide a module namespace declaration.</para>
+                <informalexample>
+                    <programlisting>module namespace pfx=”some-uri”;</programlisting>
+                </informalexample>
+            </section>
+            <section>
+                <title>Prolog</title>
+                <para>The following table defines the recommended ordering of items in the prolog if they exist.</para>
+                <informaltable
+                    frame="all"
+                    rowsep="1"
+                    colsep="1">
+                    <tgroup
+                        cols="2"
+                        align="left">
+                        <colspec
+                            colname="c1"
+                            colnum="1"
+                            colwidth="1*"/>
+                        <colspec
+                            colname="c2"
+                            colnum="2"
+                            colwidth="1*"/>
+                        <thead>
+                            <row>
+                                <entry>Item</entry>
+                                <entry>Notes</entry>
+                            </row>
+                        </thead>
+                        <tbody>
+                            <row>
+                                <entry>Imports</entry>
+                                <entry>Any schema imports followed by module imports.</entry>
+                            </row>
+                            <row>
+                                <entry>Namespace Declarations</entry>
+                                <entry>The default function and element namespaces should precede any other namespace declarations.</entry>
+                            </row>
+                            <row>
+                                <entry>Static Context Declarations</entry>
+                                <entry>
+                                    <para>Static context declarations should appear in the following order:</para>
+                                    <itemizedlist>
+                                        <listitem>
+                                            <para>BaseURI</para>
+                                        </listitem>
+                                        <listitem>
+                                            <para>Copy Namespaces</para>
+                                        </listitem>
+                                        <listitem>
+                                            <para>Boundary Space</para>
+                                        </listitem>
+                                        <listitem>
+                                            <para>Default Collation</para>
+                                        </listitem>
+                                        <listitem>
+                                            <para>Ordering Mode</para>
+                                        </listitem>
+                                        <listitem>
+                                            <para>Empty Order</para>
+                                        </listitem>
+                                        <listitem>
+                                            <para>Construction</para>
+                                        </listitem>
+                                    </itemizedlist>
+                                </entry>
+                            </row>
+                            <row>
+                                <entry>Option Declarations</entry>
+                                <entry>Implementation specific options.</entry>
+                            </row>
+                            <row>
+                                <entry>Variable Declarations</entry>
+                                <entry>Global variables.</entry>
+                            </row>
+                            <row>
+                                <entry>Function Declarations</entry>
+                                <entry>User defined functions.</entry>
+                            </row>
+                        </tbody>
+                    </tgroup>
+                </informaltable>
+
+            </section>
+        </section>
+        <section>
+            <title>Main Modules</title>
+            <para>As a general rule, an XQuery main module will normally contain just a query body. While the W3C XQuery specification allows for the definition of global variables and functions within a main module, this practice is generally not recommended since it prevents the reusability of these functions and variables by other library and main modules2 . However, since not all XQuery engines support the ability to import modules, it may become necessary in those situations to define functions and global variables within a main module. One exception to this general rule is that global variables marked as ‘external’ should only be defined in a main module. </para>
+            <para>The XQuery main module should contain the sections identified below in the listed order. </para>
+            <orderedlist>
+                <listitem>
+                    <para>XQuery version declaration</para>
+                </listitem>
+                <listitem>
+                    <para>Beginning comments</para>
+                </listitem>
+                <listitem>
+                    <para>Prolog</para>
+                </listitem>
+                <listitem>
+                    <para>Query body</para>
+                </listitem>
+            </orderedlist>
+            <section>
+                <title>XQuery version declaration</title>
+                <para>All main modules should explicitly indicate the version of the XQuery specification that they adhere to as well as any optional special encoding information.</para>
+                <informalexample>
+                    <programlisting>xquery version "1.0";
+
+or
+
+xquery version "1.0" encoding "UTF-8";</programlisting>
+                </informalexample>
+            </section>
+            <section>
+                <title>Beginning comments</title>
+                <para>All main modules should begin with an XQuery-style comment that lists the module name, version information, date, copyright, any vendor specific proprietary extension dependencies, XQuery specification and module overview. </para>
+                <informalexample>
+                    <programlisting>(:
+
+ : Module Name: Sample Main Module
+
+ : Module Version: 1.0
+
+ : Date: January 6, 2006
+
+ : Copyright: xqDoc.org …
+
+ : Proprietary XQuery Extensions Used: None
+
+ : XQuery Specification: November 2005
+
+ : Module Overview: This is a sample main module …
+
+ :)</programlisting>
+                </informalexample>
+            </section>
+            <section>
+                <title>Prolog</title>
+                <para>The following table defines the recommended ordering of items in the prolog if they exist.</para>
+                <informaltable
+                    frame="all"
+                    rowsep="1"
+                    colsep="1">
+                    <tgroup
+                        cols="2"
+                        align="left">
+                        <colspec
+                            colname="c1"
+                            colnum="1"
+                            colwidth="1*"/>
+                        <colspec
+                            colname="c2"
+                            colnum="2"
+                            colwidth="1*"/>
+                        <thead>
+                            <row>
+                                <entry>Item</entry>
+                                <entry>Notes</entry>
+                            </row>
+                        </thead>
+                        <tbody>
+                            <row>
+                                <entry>Imports</entry>
+                                <entry>Any schema imports followed by module imports.</entry>
+                            </row>
+                            <row>
+                                <entry>Namespace Declarations</entry>
+                                <entry>The default function and element namespaces should precede any other namespace declarations.</entry>
+                            </row>
+                            <row>
+                                <entry>Static Context Declarations</entry>
+                                <entry>
+                                    <para>Static context declarations should appear in the following order:</para>
+                                    <itemizedlist>
+                                        <listitem>
+                                            <para>BaseURI</para>
+                                        </listitem>
+                                        <listitem>
+                                            <para>Copy Namespaces</para>
+                                        </listitem>
+                                        <listitem>
+                                            <para>Boundary Space</para>
+                                        </listitem>
+                                        <listitem>
+                                            <para>Default Collation</para>
+                                        </listitem>
+                                        <listitem>
+                                            <para>Ordering Mode</para>
+                                        </listitem>
+                                        <listitem>
+                                            <para>Empty Order</para>
+                                        </listitem>
+                                        <listitem>
+                                            <para>Construction</para>
+                                        </listitem>
+                                    </itemizedlist>
+                                </entry>
+                            </row>
+                            <row>
+                                <entry>Option Declarations</entry>
+                                <entry>Implementation specific options.</entry>
+                            </row>
+                            <row>
+                                <entry>Variable Declarations</entry>
+                                <entry>
+                                    <para>As a general rule, global variables should not be defined in a main module. However, if the XQuery engine does not support the ability to import modules, it may be necessary to define global variables in a main module.</para>
+                                    <para>One exception to this rule is that global variables marked as ‘external’, should only be defined in a main module.</para>
+                                </entry>
+                            </row>
+                            <row>
+                                <entry>Function Declarations</entry>
+                                <entry>
+                                    <para>As a general rule, functions should not be defined in a main module. However, if the XQuery engine does not support the ability to import modules, it may be necessary to define functions in a main module.</para>
+                                </entry>
+                            </row>
+                        </tbody>
+                    </tgroup>
+                </informaltable>
+            </section>
+            <section>
+                <title>Query body</title>
+                <para>The Query body contains the XQuery expression(s) to evaluate.</para>
+            </section>
+        </section>
+    </section>
+    <section>
+        <title>Indentation</title>
+        <para>A consistent value should be used for the default unit of indentation to provide a clear indication of nesting and readability. The exact construction of the indentation (spaces vs. tabs) is unspecified. </para>
+        <section>
+            <title>Line Length</title>
+            <para>Avoid lines longer than 80 characters, since they’re not handled well by many terminals and tools.</para>
+            <note>
+                <para>Examples for use in documentation should have a shorter line length—generally no more than 70 characters.</para>
+            </note>
+        </section>
+        <section>
+            <title>Wrapping Lines</title>
+            <para>When an expression will not fit on a single line, break it according to these general principles:</para>
+            <itemizedlist>
+                <listitem>
+                    <para>Break after commas.</para>
+                </listitem>
+                <listitem>
+                    <para>Align the new line with the beginning of the expression at the same level on the previous line.</para>
+                </listitem>
+                <listitem>
+                    <para>If the above rules lead to confusing XQuery or to XQuery that’s squished up against the right margin, just use the default indentation value.</para>
+                </listitem>
+            </itemizedlist>
+            <para>If no breaks are necessary, the function call should look as follows:</para>
+            <programlisting>some-function(expression1, expression2)</programlisting>
+            <para>Here are some examples of breaking function calls:</para>
+            <programlisting>some-function(longExpression1,
+              longExpression2)
+
+some-function(longExpression1, longExpression2,
+    longExpression3, longExpression4, longExpression5)
+
+some-function(longExpression1,
+    another-function(longExpression2,
+        longExpression3))</programlisting>
+            <para>Following are examples of breaking an arithmetic expression. The first is preferred, since the break occurs outside the parenthesized expression, which is at a higher level.</para>
+            <programlisting>let $longName1 := longName2 * (longName3 + longName4 - longName5)
+                  + 4 * longname6
+
+let $longName1 := longName2 * (longName3 + longName4
+                  - longName5) + 4 * longname6 </programlisting>
+            <para>Following are two examples of indenting function declarations. The first is the conventional case. The second would shift the second and third lines to the far right if it used conventional indentation, so instead it indents by the default indentation value. The body of the function should also be indented by the default indentation value.</para>
+            <programlisting>(: CONVENTIONAL INDENTATION :)
+
+declare function some-function(arg1 as item(), arg2 as item(),
+                               arg3 as item(), arg4 as item())
+as item()
+{
+...
+};
+
+(: INDENT TO AVOID VERY DEEP INDENTS :)
+
+declare function some-unction(arg1 as item(),
+    arg2 as item(),
+        arg3 as item())
+as item()
+{
+ let $x := “test”
+ ….
+};</programlisting>
+            <para>Line wrapping for if statements should generally use double the default indentation value, since the default indentation value might make seeing the body difficult. For example:</para>
+            <programlisting>(: DON’T USE THIS INDENTATION :)
+
+if ((condition1 and condition2)
+    or (condition3 and condition4)
+    or (condition5 and condition6)) 
+then
+    do-something-about-it()
+else
+    ()
+
+(: USE THIS INDENTATION INSTEAD :)
+
+if ((condition1 and condition2)
+        or (condition3 and condition4)
+        or (condition5 and condition6)) 
+then
+    do-something-about-it()
+else
+    ()
+
+(: OR USE THIS :)
+
+if ((condition1 and condition2) or (condition3 and condition4)
+        or (condition5 and condition6)) 
+then
+    do-something-about-it()
+else
+    ()</programlisting>
+        </section>
+        <section>
+            <title>Sequences</title>
+            <para>When specifying a long sequence of XQuery expressions, place the first expression following the opening parenthesis and list each subsequent expression on a separate line. Put the closing parenthesis on the same line and following the last expression</para>
+            <programlisting>(expression1,
+ expression2,
+ …
+ expressionn)</programlisting>
+            <para>When specifying a short sequence of XQuery expressions, place the first expression following the opening parenthesis and list each subsequent expression on the same line delimited by a comma and space. Put the closing parenthesis on the same line and following the last expression.</para>
+            <programlisting>(expression1, expression2)</programlisting>
+        </section>
+        <section>
+            <title>Annotations</title>
+            <para></para>
+            <programlisting>(:~
+Search the metadata
+@param $q           The query string
+@param $start       The offset into the search results where the response begins
+@param $pagelength  The number of result items to return from the start position
+@param $facets
+This is a string containing the selected facets for the query and each facet is separtated by a double-tilde '~~'.
+
+A facet is represented by the facet name and the value separated by a colon ':'
+@param $debug       If this is set to true, then the raw search results are returned.
+@return             The search results as JSON.
+ :)
+declare
+    %rest:path("/search")
+    %rest:query-param-1('q', '{$q}', '*')
+    %rest:query-param-2('start', '{$start}', '1')
+    %rest:query-param-3('pagelength', '{$pagelength}', '10')
+    %rest:query-param-4('facets', '{$facets}', '')
+    %rest:query-param-5('debug', '{$debug}')
+    %rest:produces("application/json")
+function emh-search:perform-search(
+    $q as xs:string,
+    $start as xs:integer?,
+    $pagelength as xs:integer?,
+    $facets as xs:string?,
+    $debug as xs:boolean?) 
+as document()
+{
+    ...
+};
+</programlisting>
+        </section>
+        <section>
+            <title>Embedded XQuery</title>
+            <para>When embedding XQuery statements within XML or XHTML markup, the following conventions should be followed. The opening and closing curly brackets should follow and precede the corresponding markup tags and the initial XQuery statement be indented by the default indentation value from the markup tag. After that, the rules described above should be followed for the XQuery expression.</para>
+            <programlisting>&lt;tag>{
+    if (condition) then
+       do-something-about-it()
+    else
+        ()
+}&lt;/tag></programlisting>
+            <para>If the XQuery statement is simple, it is also acceptable to include the statement on the same line as the markup tags. In this situation, the opening and closing curly brackets should follow and precede the corresponding markup tags and the XQuery statement should be delimited by a single space from the curly brackets. </para>
+            <programlisting>&lt;tag>{ $tag }&lt;/tag></programlisting>
+        </section>
+    </section>
+    <section>
+        <title>Comments</title>
+        <note>
+            <para>See “XQuery Source File Examples” contained in Appendix A and B for examples of the comment formats described here.</para>
+        </note>
+        <para>XQuery modules can have two kinds of comments: implementation comments and documentation comments. Implementation comments are those found in the W3C XQuery Specification, are delimited by (: ... :). Documentation comments (known as “doc comments”) have been defined by xqdoc.org and are delimited by (:~ ... :). Doc comments can be extracted to HTML files using the xqDoc tool.</para>
+        <para>Implementation comments are means for commenting out sections of a module or for comments about the particular implementation. Doc comments are meant to describe the specification of the module, from an implementation-free perspective to be read by others who might not necessarily have the module at hand.</para>
+        <para>Comments should be used to give overviews of the module and provide additional information that is not readily available in the module itself. Comments should contain only information that is relevant to reading and understanding the module. </para>
+        <section>
+            <title>Implementation Comment Formats</title>
+            <para>Modules can have three styles of implementation comments: block, single-line, trailing and end-of-line.</para>
+            <section>
+                <title>Block Comments</title>
+                <para>Block comments are used to provide descriptions of modules, functions, variables and algorithms. Block comments may be used at the beginning of each module and before each function. They can also be used in other places, such as within functions. Block comments inside a function should be indented to the same level as the XQuery fragment they describe.</para>
+                <para>A block comment should be preceded by a blank line to set it apart from the rest of the code. If multiple lines are needed, begin each subsequent line with a “:” and vertically align the colons.</para>
+                <programlisting>(:
+ : Here is a block comment. It is a rather long comment to provide an
+ : example for a multi-line block comment.
+ :)</programlisting>
+            </section>
+            <section>
+                <title>Single-Line Comments</title>
+                <para>Short comments can appear on a single line indented to the level of the XQuery that follows. If a comment can’t be written in a single line, it should follow the block comment format (see section 4.1.1). A single-line comment should be preceded by a blank line. Here’s an example of a singleline comment XQuery:</para>
+                <programlisting>if (condition) then
+    (: Handle the condition. :)
+     ...
+else
+    ()</programlisting>
+            </section>
+            <section>
+                <title>Trailing Comments</title>
+                <para>Very short comments can appear on the same line as the XQuery they describe, but should be © xqdoc.org Version 1.0 12 shifted far enough to separate them from the statements. If more than one short comment appears in a chunk of XQuery, they should all be vertically aligned.</para>
+                <para>Here’s an example of a trailing comment in XQuery:</para>
+                <programlisting>if (condition) then
+    some-function() (: a comment :)
+else
+    another-function() (: a comment :) </programlisting>
+            </section>
+        </section>
+        <section>
+            <title>Documentation Comments</title>
+            <para>xqDoc comments should be used to document XQuery library and main modules in a manner similar to how Javadoc comments are used to document Java classes. With the documentation close to the source, it increases the chances that the documentation will be kept current and with tools provided by xqDoc, useful documentation can be quickly and easily generated. </para>
+            <para>xqDoc style comments begin with a '(:~' and end with a ':)' Like Javadoc, the following tags have special meaning within an xqDoc comment. In addition, the values provided for each of these tags can contain embedded MarkDown markup to enhance or emphasize the xqDoc XHTML presentation. The beginning text up to the first xqDoc tag (i.e. @author) in a xqDoc comment block is assumed to be description text for the component being documented.</para>
+            <glosslist>
+                <glossentry>
+                    <glossterm>@author</glossterm>
+                    <glossdef>
+                        <para>The @author tag identifies the author for the documented component. Zero or more @author tags can
+                            be specified (one per author) </para>
+                        <programlisting>@author Loren Cahlander</programlisting>
+                    </glossdef>
+                </glossentry>
+                <glossentry>
+                    <glossterm>@version</glossterm>
+                    <glossdef>
+                        <para>The @version tag identifies the version of the documented component. Zero or more @version tags
+                            can be specified (one per version) but in reality only a single @version tag would normally make
+                            sense. The value for the @version tag can be an arbitrary string. </para>
+                        <programlisting>@version 1.0 </programlisting>
+                    </glossdef>
+                </glossentry>
+                <glossentry>
+                    <glossterm>@since</glossterm>
+                    <glossdef>
+                        <para>The @since tag identifies the version when a documented component was supported. Zero or many
+                            @since tags can be specified, but in reality only a single @since tag would normally make sense. The
+                            value for the @since tag can be an arbitrary string but should likely match an appropriate version
+                            value. </para>
+                        <programlisting>@since 1.0</programlisting>
+                    </glossdef>
+                </glossentry>
+                <glossentry>
+                    <glossterm>@see</glossterm>
+                    <glossdef>
+                        <para>The @see tag provides the ability to hypertext link to an external web site, a library or main module
+                            contained in xqDoc, a specific function (or variable) defined in a library or main module contained in
+                            xqDoc, or arbitrary text. To link to an external site, use a complete URL such as
+                            http://www.xquery.com. To link to a library or main module contained in xqDoc, simply provide the
+                            URI for the library or main module. To link to a specific function (or variable) defined in an xqDoc
+                            library or main module, simply provide the URI for the library or main module followed by a ';' and
+                            finally the function or variable name. To provide a name for a link, simply include a second ';'
+                            followed by the name. To provide text, simply include the 'text'. Multiple @see tags can be specified
+                            (one per link or string of text). </para>
+                        <programlisting>@see http://www.xquery.com
+@see http://xqdoc.org/xqdoc/xqdoc-display
+@see http://xqdoc.org/xqdoc/xqdoc-display;build-link
+@see http://xqdoc.org/xqdoc/xqdoc-display;$months
+@see http://xqdoc.org/xqdoc/xqdoc/xqdoc-display;$months;month variable
+@see http://www.xquery.com;;xquery
+@see some text</programlisting>
+                    </glossdef>
+                </glossentry>
+                <glossentry>
+                    <glossterm>@param</glossterm>
+                    <glossdef>
+                        <para>The @param tag identifies the parameters associated with a function. For each parameter in a
+                            function, there should be a @param tag. The @param tag should be followed by the parameter name
+                            (as indicated in the function signature) and then the parameter description.</para>
+                        <programlisting>@param $name The username </programlisting>
+                    </glossdef>
+                </glossentry>
+                <glossentry>
+                    <glossterm>@return</glossterm>
+                    <glossdef>
+                        <para>The @return tag describes what is returned from a function. Zero or one @return tags can be
+                            specified. </para>
+                        <programlisting>@return Sequence of names matching the search criteria</programlisting>
+                    </glossdef>
+                </glossentry>
+                <glossentry>
+                    <glossterm>@deprecated</glossterm>
+                    <glossdef>
+                        <para>The @deprecated tag identifies the identifies the documented component as being deprecated. The
+                            string of text associated with the @deprecated tag should indicate when the item was deprecated and
+                            what to use as a replacement. </para>
+                        <programlisting>@deprecated As of 1.0 and replaced with add-user </programlisting>
+                    </glossdef>
+                </glossentry>
+                <glossentry>
+                    <glossterm>@error</glossterm>
+                    <glossdef>
+                        <para>The @error tag identifies the types of errors that can be generated by the function. Zero or more
+                            @error tags can be specified. An arbitrary string of text can be provided for a value. </para>
+                        <programlisting>@error The requested URI does not exist </programlisting>
+                    </glossdef>
+                </glossentry>
+                <glossentry>
+                    <glossterm>@custom</glossterm>
+                    <glossdef>
+                        <para></para>
+                        <programlisting>@custom:foo foo value</programlisting>
+                    </glossdef>
+                </glossentry>
+            </glosslist>
+            <para>A representative library module xqDoc comment is included below. This comment would precede the module declaration statement for the library module. </para>
+            <programlisting>(:~
+: This module provides the functions that control the Web presentation
+: of xqDoc. The logic contained in this module is not specific to any
+: XQuery implementation.
+: It should also be noted that these functions not only support the
+: real-time presentation of the xqDoc information but are also used
+: for the static offline presentation mode as well. The static offline
+: presentation mode has advantages because access to a native XML
+: database is not needed when viewing the xqDoc information ... it is
+: only needed when generating the offline materials.
+:
+: @author Darin McBeath
+: @version 1.0
+:)
+module namespace xqdoc="http://xqdoc.org/xqdoc/display" </programlisting>
+            <para>A representative library module xqDoc function comment is included below. Note how embedded MarkDown markup can be used within an xqDoc description to enhance the presentation when the xqDoc comments are viewed. This comment would precede the function declaration statement in the library module. </para>
+            <programlisting>(:~
+: The controller for constructing the xqDoc HTML information for
+: the specified library module. The following information for
+: each library module will be generated.
+: 
+: * Module introductory information
+: * Global variables declared in this module
+: * Modules imported by this module
+: * Summary information for each function defined in the module
+: * Detailed information for each function defined in the module
+:
+: @param $uri the URI for the library module
+: @param $local indicates whether to build static HTML link for offline
+: viewing or dynamic links for real-time viewing.
+: @return XHTML.
+:)
+declare function xqdoc:print-module($uri as xs:string, $local as xs:boolean)
+as element()*
+ {</programlisting>
+            <para>For further details about doc comments and xqDoc, see the xqDoc home page at: http://xqdoc.org</para>
+            <para>As a general rule, if you need to give information about a module, import, variable, or function that isn’t appropriate for documentation, use an implementation block comment (see section 4.1.1) or single-line (see section 4.1.2) comment immediately after the declaration. For example, details about the implementation of a module should go in such an implementation block and not in the module doc comment.</para>
+        </section>
+    </section>
+    <section>
+        <title>Declarations</title>
+        <para></para>
+        <section>
+            <title>Local variable declarations</title>
+            <para>One local variable declaration (and assignment) per let clause is recommended since it helps with clarity. For example,</para>
+            <programlisting>let $givenName := “Loren”
+let $surname   := “Cahlander”</programlisting>
+            <para>is preferred over</para>
+            <programlisting>let $givenName := “Loren”,
+    $surname   := “Cahlander”</programlisting>
+        </section>
+        <section>
+            <title>Function declarations</title>
+            <para>When authoring a function, the following rules should be followed:</para>
+            <itemizedlist>
+                <listitem>
+                    <para>No space between the function name and the parenthesis “(“ starting its parameter list.</para>
+                </listitem>
+                <listitem>
+                    <para>Follow conventions listed in section 3.2 for dealing with large parameter lists</para>
+                </listitem>
+                <listitem>
+                    <para>The return type should appear on a separate line and vertically align with the declare function statement.</para>
+                </listitem>
+                <listitem>
+                    <para>The opening brace “{“ should appear on the line following the return type and vertically align with the declare function statement.</para>
+                </listitem>
+                <listitem>
+                    <para>XQuery expression(s) within the function should follow the indentation conventions described in section 3.</para>
+                </listitem>
+                <listitem>
+                    <para>The closing brace and semi-colon “};” should appear on a separate line and vertically align with the declare function statement</para>
+                    <programlisting>declare function some-function($arg1 as item(),
+                               $arg2 as item())
+as item()
+{
+    let $givenName := “Darin”
+    …
+};</programlisting>
+                </listitem>
+            </itemizedlist>
+        </section>
+    </section>
+    <section>
+        <title>Expressions</title>
+        <para>There are a number of expressions defined in the XQuery specification. Since XQuery is a fully composable language (specifically since expressions can be nested within one another), it is a difficult task to completely cover all scenarios. Instead, the following sections highlight the recommended format for a handful of expressions that are frequently used when authoring XQuery and offer some general guidelines.</para>
+        <section>
+            <title>if-the-else expressions</title>
+            <para>A general rule to follow is that the ‘if’, ‘else’, ‘else if’ associated with the same ‘if’ clause should all be on a separate line and vertically aligned. The expression associated with the true or false condition should be indented (as described in section 3). The if-then-else class of expressions should have one of the following forms:</para>
+            <programlisting>if (condition) 
+then
+    ...
+else
+    ...
+if (condition) 
+then
+    ...
+else if (condition) 
+then
+    ...
+else
+    ...</programlisting>
+            <para>For simple and short if-then-else expressions, it is also acceptable to include the entire expression on a single line. In this scenario, the if-then-else expression should have the following form: </para>
+            <programlisting>if (condition) then ... else ...</programlisting>
+        </section>
+        <section>
+            <title>FLWOR expressions</title>
+            <para>The FLWOR expression is more complex than the basic if-then-else expression. A general rule to follow is that the ‘let’, ‘for’, ‘where’, ‘order by’, and ‘return’ clauses associated with the same FLWOR expression should all be on a separate line and vertically aligned. The expressions associated with each of these clauses should be on the same line as the clause or on the following line indented by the default indentation value (if the expression is lengthy and fairly complex). A FLWOR expression embedded within another FLWOR expression’s ‘return’ or ‘where’ clause should be indented by the default indentation value (on the following line). The FLWOR class of expressions should have one of the following forms:</para>
+            <programlisting>let $set := (3,2,1)
+for $i in $set
+return $i
+
+let $set := (3,2,1)
+for $i in $set
+where $i > 1
+order by $i
+return $i
+
+let $set1 := (3,2,1)
+let $set2 := (1,2,3)
+for $x in $set2
+for $y in $set1
+return $x + $y
+
+let $value := “some value”
+return $value
+
+let $set1 := (3,2,1)
+let $set2 := (1,2,3)
+for $x in $set2
+for $y in $set1
+return
+    if ($x = $y) then true() else false()
+
+let $set := (3,2,1)
+for $x in $set
+return
+    for $j in $set
+    return
+        if ($j = $x) then true() else false()</programlisting>
+        </section>
+        <section>
+            <title>Typeswitch expressions</title>
+            <para>The typeswitch expression is another more complex expression. A general rule to follow is that the ‘typeswitch’ (and expression) should be on a separate line. Each ‘case’ (and type) or ‘default’ should be on a separate line indented by the default indentation value. Lastly, each ‘return’ should be on a separate line indented by an additional default indentation value. The expression associated with the ‘return’ should be on the same line or on the following line indented by the default indentation value (if the expression is lengthy and fairly complex). The typeswitch class of expressions should have the following form:</para>
+            <programlisting>typeswitch($customer/billing-address)
+    case $a as element(*,USAddress)
+        return $a/state
+    case $a as element(*,CanadaAddress)
+        return $a/province
+    case $a as element(*,JapanAddress)
+        return $a/prefecture
+    default
+        return “unknown”</programlisting>
+        </section>
+    </section>
+    <section>
+        <title>White Space</title>
+        <section>
+            <title>Blank Lines</title>
+            <para>Blank lines improve readability by setting off sections of XQuery that are logically related.</para>
+            <para>Two blank lines should always be used in the following circumstances:</para>
+            <itemizedlist>
+                <listitem>
+                    <para>Between the main sections defined in 2.1 and 2.2</para>
+                </listitem>
+                <listitem>
+                    <para>Between the groups of like items defined in a prolog for a module.</para>
+                </listitem>
+            </itemizedlist>
+            <para>One blank line should always be used in the following circumstances:</para>
+            <itemizedlist>
+                <listitem>
+                    <para>Between items declared in a prolog (i.e. functions, namespace declarations, etc.)</para>
+                </listitem>
+                <listitem>
+                    <para>Between the local variables in a function and subsequent statements</para>
+                </listitem>
+                <listitem>
+                    <para>Before a block (see section 4.1.1) or single-line (see section 4.1.2) comment</para>
+                </listitem>
+                <listitem>
+                    <para>Between logical sections inside a function to improve readability</para>
+                </listitem>
+            </itemizedlist>
+            <programlisting language="xquery">xquery version "1.0";
+
+
+(: Beginning Comments :)
+
+
+module namespace math="http://xqdoc.org/sample-math-lib";
+
+
+declare default function namespace "http://www.w3.org/2005/xpath-functions";
+
+declare default element namespace "http://www.w3.org/1999/xhtml";
+
+declare function some-function($operand1 as xs:integer,
+                               $operand2 as xs:integer)
+as xs:integer
+{
+…
+};</programlisting>
+        </section>
+        <section>
+            <title>Blank Spaces</title>
+            <para>Blank spaces should be used in the following circumstances:</para>
+            <itemizedlist>
+                <listitem>
+                    <para>A keyword followed by a parenthesis should be separated by a space. Example:</para>
+                    <programlisting>if (true()) then
+    ...
+else
+    ()</programlisting>
+                </listitem>
+            </itemizedlist>
+            <para>Note that a blank space should not be used between a function name and its opening parenthesis. This helps to distinguish keywords from function invocations</para>
+            <itemizedlist>
+                <listitem>
+                    <para>A blank space should appear after commas in argument lists.</para>
+                    <programlisting>some-function(parm1, parm2, parm3)</programlisting>
+                </listitem>
+                <listitem>
+                    <para>A blank space should appear after commas in sequence lists.</para>
+                    <programlisting>let $a := (item1, item2, item3)</programlisting>
+                </listitem>
+                <listitem>
+                    <para>All arithmetic operators should be separated from their operands by spaces.</para>
+                    <programlisting>let $result := 1 + 2</programlisting>
+                </listitem>
+            </itemizedlist>
+        </section>
+    </section>
+    <section>
+        <title>Naming Conventions</title>
+        <para></para>
+        <informaltable
+            frame="none"
+            rowsep="0"
+            colsep="0">
+            <tgroup
+                cols="3"
+                align="left">
+                <colspec
+                    colname="c1"
+                    colnum="1"
+                    colwidth="1*"/>
+                <colspec
+                    colname="c2"
+                    colnum="2"
+                    colwidth="1*"/>
+                <colspec
+                    colname="c3"
+                    colnum="3"
+                    colwidth="1*"/>
+                <thead>
+                    <row>
+                        <entry>Identifier Type</entry>
+                        <entry>Rules for Naming</entry>
+                        <entry>Example</entry>
+                    </row>
+                </thead>
+                <tbody>
+                    <row>
+                        <entry>
+                            <para>Global Variable (not requiring run time evaluation)</para>
+                        </entry>
+                        <entry>
+                            <para>Should be uppercase with hyphens separating each word</para>
+                        </entry>
+                        <entry>
+                            <programlisting>$FAILURE-CODE
+$LIST-OF-URIS</programlisting>
+                        </entry>
+                    </row>
+                    <row>
+                        <entry>
+                            <para>Global Variable (requiring run time evaluation)</para>
+                        </entry>
+                        <entry>
+                            <para>Should be lowercase with hyphens separating each word</para>
+                        </entry>
+                        <entry>
+                            <programlisting>$country-list</programlisting>
+                        </entry>
+                    </row>
+                    <row>
+                        <entry>
+                            <para>Local Variable</para>
+                        </entry>
+                        <entry>
+                            <para>Should be mixed camel case with a lower case first letter</para>
+                        </entry>
+                        <entry>
+                            <programlisting>$city
+$intermediateResult</programlisting>
+                        </entry>
+                    </row>
+                    <row>
+                        <entry>
+                            <para>Function Name</para>
+                        </entry>
+                        <entry>
+                            <para>Should be verbs in lower case, with hyphens separating each word</para>
+                        </entry>
+                        <entry>
+                            <programlisting>produce-report()
+calculate-result()</programlisting>
+                        </entry>
+                    </row>
+                    <row>
+                        <entry>
+                            <para>Namespace Prefix</para>
+                        </entry>
+                        <entry>
+                            <para>Should be lower case alpha characters and less than 8 characters in length.</para>
+                        </entry>
+                        <entry>
+                            <programlisting>display
+lib</programlisting>
+                        </entry>
+                    </row>
+                </tbody>
+            </tgroup>
+        </informaltable>
+    </section>
+    <section>
+        <title>RESTful Services</title>
+        <para><emphasis
+                role="bold">OpenAPI Specification</emphasis> (formerly Swagger Specification) is an API description format for REST APIs. An OpenAPI file allows you to describe your entire API, including:</para>
+        <itemizedlist>
+            <listitem>
+                <para>Available endpoints (<code>/users</code>) and operations on each endpoint (<code>GET /users</code>, <code>POST /users</code>, etc.)</para>
+            </listitem>
+            <listitem>
+                <para>Operation parameters Input and output for each operation</para>
+            </listitem>
+            <listitem>
+                <para>Authentication methods</para>
+            </listitem>
+            <listitem>
+                <para>Contact information, license, terms of use and other information.</para>
+            </listitem>
+        </itemizedlist>
+        <para>API specifications can be written in YAML or JSON. The format is easy to learn and readable to both humans and machines. With xqDoc, it is possible to generate the JSON format of the specification. Extracting the OpenAPI JSON file (format defined as specification 3.0.2 <link
+                xlink:href="https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md"></link>) from the extracted xqDoc of the codebase will keep the REST API descriptions current to the existing codebase. </para>
+        <note>
+            <para>This will save time and money by not requiring a separate task to update the API description and risk it becoming out of date.</para>
+        </note>
+        <section>
+            <title>RestXQ</title>
+            <para>Adam Retter introduced the idea of creating RESTful Services in XQuery with Annotations at XML Prague 2012 and then with Christian Grün managed to flesh out the <link
+                    xlink:href="http://exquery.github.io/exquery/exquery-restxq-specification/restxq-1.0-specification.html">RESTXQ Specification</link>.</para>
+            <para>RestXQ supports the following HTTP Methods:<code>GET, HEAD, POST, PUT, DELETE, OPTIONS</code> and <code>PATCH</code></para>
+            <section>
+                <title>OpenAPI Mapping</title>
+                <para>Find all xqDoc functions <emphasis>xqdoc:function</emphasis> that contain the <emphasis><emphasis
+                            role="bold">%rest:path</emphasis></emphasis> RestXQ annotation.  The functions are grouped by the identical path annotation.</para>
+                <para></para>
+                <section>
+                    <title>Parameters</title>
+                    <para></para>
+                    <note>
+                        <para>Discussion point!  Should there be custom tags or function annotations defining the schema and showing examples for the parameterrs and the return type?</para>
+                    </note>
+                    <para></para>
+                    <table
+                        frame="none"
+                        rowsep="1"
+                        colsep="1">
+                        <title>Data type mapping</title>
+                        <tgroup
+                            cols="2"
+                            align="left">
+                            <colspec
+                                colname="c1"
+                                colnum="1"
+                                colwidth="1*"/>
+                            <colspec
+                                colname="c2"
+                                colnum="2"
+                                colwidth="1*"/>
+                            <thead>
+                                <row>
+                                    <entry>XQuery</entry>
+                                    <entry>JSON</entry>
+                                </row>
+                            </thead>
+                            <tbody>
+                                <row>
+                                    <entry></entry>
+                                    <entry>string</entry>
+                                </row>
+                                <row>
+                                    <entry></entry>
+                                    <entry>number</entry>
+                                </row>
+                                <row>
+                                    <entry></entry>
+                                    <entry>boolean</entry>
+                                </row>
+                                <row>
+                                    <entry></entry>
+                                    <entry>binary</entry>
+                                </row>
+                                <row>
+                                    <entry></entry>
+                                    <entry></entry>
+                                </row>
+                            </tbody>
+                        </tgroup>
+                    </table>
+                    <para></para>
+                    <section>
+                        <title>Path</title>
+                        <para></para>
+                    </section>
+                    <section>
+                        <title>Query</title>
+                        <para></para>
+                    </section>
+                    <section>
+                        <title>Header</title>
+                        <para></para>
+                    </section>
+                    <section>
+                        <title>Cookie</title>
+                        <para></para>
+                    </section>
+                    <section>
+                        <title>Form</title>
+                        <para>Form parameters are used by the HTTP POST method.</para>
+                    </section>
+                </section>
+                <section>
+                    <title>Methods</title>
+                    <para></para>
+                    <section>
+                        <title>GET</title>
+                        <para>A GET is a HTTP request method that is specified by either having a %rest:GETannotation or no method annotation and no %rest:form-param annotation.</para>
+                        <figure>
+                            <title>Mapping HTTP POST RestXQ to OpenAPI</title>
+                            <mediaobject>
+                                <imageobject>
+                                    <imagedata
+                                        fileref="images/RestXQ-GET.png" width="90%"></imagedata>
+                                </imageobject>
+                            </mediaobject>
+                        </figure>
+                    </section>
+                    <section>
+                        <title>POST</title>
+                        <para>A POST is a HTTP request method that is specified by either having a %rest:POST("{$body}") annotation or one or more %rest:form-param("param-name", "{$param-variable}")</para>
+                        <section>
+                            <title>%rest:POST("{$body}")</title>
+                            <para></para>
+                            <figure>
+                                <title>Mapping Content POST to OpenAPI</title>
+                                <mediaobject>
+                                    <imageobject>
+                                        <imagedata
+                                            fileref="images/RestXQ-POST.png" width="90%"></imagedata>
+                                    </imageobject>
+                                </mediaobject>
+                            </figure>
+                        </section>
+                        <section>
+                            <title>%rest:form-param</title>
+                            <para>If the form param is of the type map:map, then it is for multiple file upload.</para>
+                            <itemizedlist>
+                                <listitem>
+                                    <para>The XQuery parameter name ($my-attachment in this case) maps the following together: <orderedlist>
+                                            <listitem>
+                                                <para>xqDoc param description</para>
+                                            </listitem>
+                                            <listitem>
+                                                <para>RestXQ annotation form-param</para>
+                                            </listitem>
+                                            <listitem>
+                                                <para>XQuery function parameter name</para>
+                                            </listitem>
+                                        </orderedlist></para>
+                                </listitem>
+                                <listitem>
+                                    <para>The form-param name becomes the parameter's name in the OpenAPI view</para>
+                                </listitem>
+                                <listitem>
+                                    <para>The xqDoc param description becomes the paramter's description in the OpenAPI view.  The description is in MarkDown format.</para>
+                                </listitem>
+                                <listitem>
+                                    <para>The XQuery parameter's data type maps to the OpenAPI's parameter content</para>
+                                </listitem>
+                            </itemizedlist>
+                            <figure>
+                                <title>Mapping Mutlipart File Upload to OpenAPI</title>
+                                <mediaobject>
+                                    <imageobject>
+                                        <imagedata
+                                            fileref="images/multipart-file-upload.png"
+                                            width="90%"></imagedata>
+                                    </imageobject>
+                                </mediaobject>
+                            </figure>
+                            <para>The function's xqDoc description becomes the OpenAPI view's description of the HTTP method's description.  That description is also in the MarkDown format.</para>
+                        </section>
+                    </section>
+                    <section>
+                        <title>PUT</title>
+                        <para>A POST is a HTTP request method that is specified by having a %rest:PUT("{$body}") annotation.</para>
+                        <figure>
+                            <title>Mapping HTTP PUT Content to OpenAPI</title>
+                            <mediaobject>
+                                <imageobject>
+                                    <imagedata
+                                        fileref="images/RestXQ-PUT.png" width="90%"></imagedata>
+                                </imageobject>
+                            </mediaobject>
+                        </figure>
+                    </section>
+                    <section>
+                        <title>DELETE</title>
+                        <para>A DELETE is a HTTP request method that is specified by having a %rest:DELETE annotation</para>
+                        <figure>
+                            <title>Mapping HTTP DELETE RestXQ to OpenAPI</title>
+                            <mediaobject>
+                                <imageobject>
+                                    <imagedata
+                                        fileref="images/RestXQ-DELETE.png" width="90%"></imagedata>
+                                </imageobject>
+                            </mediaobject>
+                        </figure>
+                    </section>
+                    <section>
+                        <title>HEAD</title>
+                        <para>A HEAD is a HTTP request method that is specified by having a %rest:HEAD annotation</para>
+                    </section>
+                    <section>
+                        <title>OPTIONS</title>
+                        <para>A OPTIONS is a HTTP request method that is specified by having a %rest:OPTIONS annotation</para>
+                    </section>
+                    <section>
+                        <title>PATCH</title>
+                        <para>A PATCH is a HTTP request method that is specified by having a %rest:PATCH annotation</para>
+                    </section>
+                </section>
+            </section>
+        </section>
+        <section>
+            <title>RXQ (MarkLogic)</title>
+            <para>The Open Source Library <link
+                    xlink:href="https://github.com/xquery/rxq">RXQ</link> was the first RESTXQ implementation for MarkLogic Server. It was / is a hobby project by Jim Fuller who worked for MarkLogic at the time of creating the library. RXQ was used successfully on many commercial projects by MarkLogic Customers.</para>
+            <section>
+                <title>OpenAPI Mapping</title>
+                <para></para>
+                <section>
+                    <title>Parameters</title>
+                    <para></para>
+                    <programlisting>declare
+   %rxq:PUT
+   %rxq:path('/address/id/(.*)')
+   %rxq:produces('text/html')
+   %rxq:consumes('application/xml')
+function addr:insert-address($id){
+   ....
+};</programlisting>
+                    <section>
+                        <title>Path</title>
+                        <para></para>
+                    </section>
+                </section>
+                <section>
+                    <title>Methods</title>
+                    <para></para>
+                    <section>
+                        <title>GET</title>
+                        <para></para>
+                    </section>
+                    <section>
+                        <title>POST</title>
+                        <para>A POST is a HTTP request method </para>
+                    </section>
+                    <section>
+                        <title>PUT</title>
+                        <para></para>
+                    </section>
+                    <section>
+                        <title>DELETE</title>
+                        <para></para>
+                    </section>
+                </section>
+            </section>
+        </section>
+        <section>
+            <title>MarkLogic Services</title>
+            <para>MarkLogic Services are defined in a ml-grdle project in the <code>src/main/ml-modules/services</code> directory. Each file in the directory is for a service path. e.g. <code>part.xqy</code> maps to the path <code>/v1/resource/part</code> with the HTTP methods GET, POST, DELETE, and PUT defined as the functions <itemizedlist>
+                    <listitem>
+                        <para>get($content as map:map, $params as map:map)</para>
+                    </listitem>
+                    <listitem>
+                        <para>post($content as map:map, $params as map:map, $input as document-node()*)</para>
+                    </listitem>
+                    <listitem>
+                        <para>delete($content as map:map, $params as map:map)</para>
+                    </listitem>
+                    <listitem>
+                        <para>put($content as map:map, $params as map:map, $input as document-node()*)</para>
+                    </listitem>
+                </itemizedlist></para>
+            <para>The following was created with the ml-gradle task <code>gradle mlCreateResource -PresourceName=part -PresourceType=xqy</code> producing the file <code>src/main/ml-modules/services/part.xqy</code></para>
+            <programlisting>xquery version "1.0-ml";
+
+module namespace resource = "http://marklogic.com/rest-api/resource/part";
+
+declare function get(
+  $context as map:map,
+  $params  as map:map
+  ) as document-node()*
+{
+  xdmp:log("GET called")
+};
+
+declare function put(
+  $context as map:map,
+  $params  as map:map,
+  $input   as document-node()*
+  ) as document-node()?
+{
+  xdmp:log("PUT called")
+};
+
+declare function post(
+  $context as map:map,
+  $params  as map:map,
+  $input   as document-node()*
+  ) as document-node()*
+{
+  xdmp:log("POST called")
+};
+
+declare function delete(
+  $context as map:map,
+  $params  as map:map
+  ) as document-node()?
+{
+  xdmp:log("DELETE called")
+};
+</programlisting>
+            <section>
+                <title>OpenAPI Mapping</title>
+                <para>There are three key entries for the xqDoc comment for the function are:</para>
+                <orderedlist>
+                    <listitem>
+                        <para>The description of the function</para>
+                    </listitem>
+                    <listitem>
+                        <para>@custom:openapi</para>
+                    </listitem>
+                    <listitem>
+                        <para>@custom:openapi-ignore Yes</para>
+                    </listitem>
+                </orderedlist>
+                <para>The OpenAPI json section for a path are generated by the following:</para>
+                <orderedlist>
+                    <listitem>
+                        <para>The path name is generated from the filename.  e.g.  <code>part.xqy</code> => <code>/part</code></para>
+                    </listitem>
+                    <listitem>
+                        <para>The HTTP methods are generated from the XQuery methods <emphasis><emphasis
+                                    role="bold">get</emphasis></emphasis>, <emphasis><emphasis
+                                    role="bold">put</emphasis></emphasis>, <emphasis><emphasis
+                                    role="bold">post</emphasis></emphasis>, and <emphasis><emphasis
+                                    role="bold">delete</emphasis></emphasis> that does not have the xqDoc tag <code>@custom:openapi-ignore Yes</code><itemizedlist>
+                                <listitem>
+                                    <para>The description of the HTTP method is crreated using the xqDoc description of the function. The description uses the MarkDown format</para>
+                                </listitem>
+                                <listitem>
+                                    <para>The rest of the content of the HTTP method is generated using the content of the <code>@custom:openapi</code> xqDoc tag.</para>
+                                </listitem>
+                            </itemizedlist></para>
+                    </listitem>
+                </orderedlist>
+                <note>
+                    <para>Discussion point!  Should the custom tag <code>@custom:openapi</code> remain in its current state or be broken down into smaller pieces similar to the RestXQ way of generating the OpenAPI JSON document?</para>
+                </note>
+                <programlisting>"/part": {
+    "get": {
+        "description": "Get a part by part id or parts by user who created the parts (uses pagination)",
+        "responses": {
+            "200": {"$ref": "#/components/responses/trait_hasPartResponse_200"}
+        },
+        "operationId": "GET_part",
+        "parameters": [
+            {
+                "name": "createdBy",
+                "in": "query",
+                "description": "Get all parts created by the user.",
+                "schema": {
+                    "includePath": "traits.raml",
+                    "type": "string"
+                }
+            },
+            {"$ref": "#/components/parameters/trait_part_partId"},
+            {"$ref": "#/components/parameters/trait_pageable_start"},
+            {"$ref": "#/components/parameters/trait_pageable_pageLength"}
+        ]
+    },
+    "post": {
+        "description": "Create/update part document. PartId uuid is created for create. PartId must exist in document for update.",
+        "responses": {
+            "200": {"$ref": "#/components/responses/trait_hasPostResponse_200"}
+        },
+        "operationId": "POST_part"
+    },
+    "delete": {
+        "description": "Delete part(s) by part id (deep will delete all children parts - default).",
+        "responses": {
+            "200": {
+                "description": "",
+                "content": {
+                    "application/xml": {
+                        "schema": {"example": "empty"}
+                    }
+                }
+            }
+        },
+        "operationId": "DELETE_part",
+        "parameters": [
+            {
+                "name": "deep",
+                "in": "query",
+                "description": "Setting deep to true deletes all of the children parts for the partId.",
+                "schema": {
+                    "default": true,
+                    "type": "boolean"
+                }
+            },
+            {"$ref": "#/components/parameters/trait_part_partId"}
+        ]
+    }
+},
+</programlisting>
+            </section>
+        </section>
+        <section>
+            <title>Main Module</title>
+            <para></para>
+            <section>
+                <title>OpenAPI Mapping</title>
+                <para></para>
+                <section>
+                    <title>Parameters</title>
+                    <para></para>
+                </section>
+                <section>
+                    <title>Methods</title>
+                    <para></para>
+                    <section>
+                        <title>GET</title>
+                        <para></para>
+                    </section>
+                    <section>
+                        <title>POST</title>
+                        <para>A POST is a HTTP request method </para>
+                    </section>
+                    <section>
+                        <title>PUT</title>
+                        <para></para>
+                    </section>
+                    <section>
+                        <title>DELETE</title>
+                        <para></para>
+                    </section>
+                </section>
+            </section>
+        </section>
+    </section>
+    <section>
+        <title>Best Practices</title>
+        <para>Best practices help with the ongoing maintenance associated with library and main modules. Like naming conventions, if these practices are followed, then there will be consistency across the code base which can help team members in their understanding of a new module. </para>
+        <section>
+            <title>Predefined Namespaces</title>
+            <para>The following prefixes (and URIs) should not be used for any user-defined functions. The use (for your own purposes) of the URIs listed below is prohibited by the specification and will result in a static error. The use (for your own purposes) of the prefixes listed below is discouraged. The exception to this rule is ‘local’ … this should be used if you find it necessary to define functions within a main module.</para>
+            <programlisting>xml = http://www.w3.org/XML/1998/namespace
+
+xs = http://www.w3.org/2001/XMLSchema
+
+xsi = http://www.w3.org/2001/XMLSchema-instance
+
+fn = http://www.w3.org/2005/xpath-functions
+
+xdt = http://www.w3.org/2005/xpath-datatypes
+
+local = http://www.w3.org/2005/xquery-local-functions</programlisting>
+        </section>
+        <section>
+            <title>Constants</title>
+            <para>Numeric and string literal value constants should be declared as global variables and not explicitly specified in an XQuery expression ‘let’ clause.</para>
+            <programlisting>declare variable $COUNTRY as xs:string { “United States of America” };</programlisting>
+            <para>Similarly, global variables requiring run time evaluation should not be defined in an XQuery expression ‘let’ clause. </para>
+            <programlisting>declare variable $country-list as xs:string { doc(‘countries.xml’)/country };</programlisting>
+        </section>
+        <section>
+            <title>Default Function Namespace</title>
+            <para>Do not additionally declare a namespace prefix associated with the same URI for the default function namespace and interchangeably use the prefix (and no prefix) within the same module. This implies that it is not a good practice to create a default function namespace associated with the same URI of a given library module where the default function namespace is declared.</para>
+            <para>Don’t do the following:</para>
+            <programlisting>declare default function namespace "http://www.w3.org/2005/xpath-functions";
+declare namespace func="http://www.w3.org/2005//xpath-functions";
+….
+concat($var1, $var2)
+…
+func:concat($var1, $var2)</programlisting>
+            <para>It is generally a good rule to never specify another default function namespace other than the XPath Functions and Operators namespace. The use of a different namespace for the default function namespace only causes confusion amongst XQuery developers. Similarly, if this rule is followed, one should never use the ‘fn’ prefix when referencing functions defined in the XPath Functions and Operators namespace. It is more natural to use a prefix when invoking user defined functions and not use a prefix when invoking functions defined in the default function namespace. </para>
+        </section>
+        <section>
+            <title>Default Element Namespace</title>
+            <para>Do not additionally declare a namespace prefix associated with the same URI for the default element namespace and interchangeably use the prefix (and no prefix) within the same module. This will only be a source of confusion for others trying to understand an XQuery module. </para>
+            <para>Don’t do the following:</para>
+            <programlisting>declare default element namespace "http://www.w3.org/1999/xhtml";
+
+declare namespace xhtml="http://www.w3.org/1999/xhtml";
+
+&lt;html>
+ &lt;xhtml:body>
+ …
+&lt;/html></programlisting>
+        </section>
+        <section>
+            <title>Function Types and Ordinality</title>
+            <para>Whenever possible, use the most constraining type possible when defining return types for functions. Since XQuery supports subtype substitution (but not supertype substitution) it’s usually a good rule to choose a more primitive base type for parameters when appropriate. For example, if a function parameter was declared as xs:positiveInteger and the invoking module was using xs:integer, the xs:integer would need to be cast to xs:positiveInteger before invoking the function. Always specify the most constraining number of occurrences for each type whenever possible. A type should always be specified for every parameter and the return type.</para>
+            <para>Don’t do the following:</para>
+            <programlisting>declare function some-function($operand1,
+                               $operand2)
+{
+…
+};</programlisting>
+            <para>But, instead do the following:</para>
+            <programlisting>declare function some-function($operand1 as xs:string,
+                               $operand2 as xs:string?)
+as xs:string*
+{
+…
+};</programlisting>
+        </section>
+        <section>
+            <title>XPath and FLWOR</title>
+            <para>Whenever possible, use an XPath expression (with a predicate) instead of a FLWOR expression. Since this will result in a compact and clear expression, the XQuery module will not be cluttered with unnecessary XQuery statements. </para>
+            <para>Don’t do the following:</para>
+            <programlisting>for $x in collection(“dogs”)/breed
+where $x/name = “spot”
+return
+    $x</programlisting>
+            <para>But, instead do the following:</para>
+            <programlisting>collection(“dogs”)/breed[name=”spot”]</programlisting>
+        </section>
+        <section>
+            <title>Library Module Namespace</title>
+            <para>A library module should not use the XPath F&amp;O namespace for the module namespace (see 9.3).</para>
+            <programlisting>module namespace mod="http://www.w3.org/2005/xpath-functions";</programlisting>
+            <para>Instead, a library module namespace should be modelled after the namespace structure used in the source XML schema. Likewise, the collection of functions declared in the library module should be associated with the elements and types defined in the corresponding schema.</para>
+            <para>For example, the XML schema associated with xqDoc has the following namespace</para>
+            <programlisting>http://xqdoc.org/xqDoc/xml</programlisting>
+            <para>And the XQuery library module that manipulates this xqDoc XML has the following namespace</para>
+            <programlisting>http://xqdoc.org/xqDoc/display</programlisting>
+        </section>
+        <section>
+            <title>Variable name reuse</title>
+            <para>Reuse of local variable names is acceptable. This will eliminate the unnecessary specification of unique variable names for intermediate expressions.</para>
+            <para>Don’t do the following:</para>
+            <programlisting>let $x := some-function()
+let $y := another-function($x)</programlisting>
+            <para>But, instead do the following:</para>
+            <programlisting>let $x := some-function()
+let $x := another-function($x)</programlisting>
+            <para>However, do not reuse a variable name that is used within both a global and local scope as this will only cause confusion as to what variable will be in scope for the expression. If the rules for global variable and local variable names are followed, this should not be an issue.</para>
+            <programlisting>declare variable $x as xs:string { “something” );
+for $x in (1 to 5)
+return $x</programlisting>
+        </section>
+        <section>
+            <title>Hidden functions</title>
+            <para>Functions should be declared in a main module only when the intent is to hide the implementation of the particular function. By placing the function declaration in a main module, one is essentially making the function ‘private’ and preventing other library modules or main modules from reusing the function.</para>
+        </section>
+    </section>
+    <appendix>
+        <title>Appendix A - Sample Main Module</title>
+        <para>The following is a representative XQuery main module that adheres to the style conventions outlined in this document.</para>
+        <informalexample>
+            <programlisting>xquery version "1.0";
+
+
+(:
+ : Module Name: Math Main Module
+ :
+ : Module Version: 1.0
+ :
+ : Date: 01/17/2006
+ :
+ : Copyright: Sample Copyright here
+ :
+ : Proprietary
+ : Extensions: None
+ :
+ : XQuery
+ : Specification November 2005
+ :
+ : Module Overview: This sample main module illustrates the
+ : proper implementations of the XQuery
+ : Style Guidelines.
+ :)
+
+(:~
+ : This module provides a sample main module authored according
+ : to the proposed XQuery Style Guidelines
+ :
+ : @author Curt Kohler
+ : @author Darin McBeath
+ : @since January 17, 2006
+ : @version 1.0
+ :)
+
+import module namespace math="http://xqdoc.org/sample-math-lib" at "sample-math-lib.xqy";
+
+declare default function namespace "http://www.w3.org/2005/xpath-functions";
+
+declare default element namespace "http://www.w3.org/1999/xhtml";
+
+
+(:~
+ : This variable contains the first variable to process.
+ :)
+declare variable $operand-one as xs:integer external;
+
+(:~
+ : This variable contains the second integer to process.
+ :)
+declare variable $operand-two as xs:integer external;
+
+
+&lt;html>
+    &lt;head>
+        &lt;title>A Math Example&lt;/title>
+    &lt;/head>
+    &lt;body>
+        &lt;p>The following is an XQuery math example:&lt;/p>
+        &lt;hr/>
+        &lt;p>Operand 1: { $operand-one }&lt;/p>
+        &lt;p>Operand 2: { $operand-two }&lt;/p>
+        &lt;p/>
+        &lt;hr/>
+        &lt;p>Sum is: { math:add-operands($operand-one, $operand-two) }&lt;/p>
+        &lt;p>Difference is: { math:subtract-operands($operand-one, $operand-two) }&lt;/p>
+        &lt;p>Product is: { math:multiply-operands($operand-one, $operand-two) }&lt;/p>
+        &lt;p>Quotient is: {
+            if ($operand-two = 0) then
+                &lt;b>I’m sorry, you can’t divide by zero.&lt;/b>
+            else
+                math:divide-operands($operand-one, $operand-two)
+        }&lt;/p>
+    &lt;/body>
+&lt;/html></programlisting>
+        </informalexample>
+    </appendix>
+    <appendix>
+        <title>Appendix B - Sample Library Module</title>
+        <para>The following is a representative XQuery library module that adheres to the style conventions outlined in this document.</para>
+        <informalexample>
+            <programlisting>xquery version "1.0";
+
+
+(:
+ : Module Name: Math Library Module
+ :
+ : Module Version: 1.0
+ :
+ : Date: 01/17/2006
+ :
+ : Copyright: Sample Copyright here
+ :
+ : Proprietary
+ : Extensions: None
+ :
+ : XQuery
+ : Specification November 2005
+ :
+ : Module Overview: This sample main module illustrates the
+ : proper implementations of the XQuery
+ : Style Guidelines for a Library Module.
+ :)
+
+
+(:~
+ : This module provides a sample library module of simple math
+ : functions that are authored according to the proposed XQuery
+ : Style Guidelines
+ :
+ : @author Curt Kohler
+ : @author Darin McBeath
+ : @since January 17, 2006
+ : @version 1.0
+ :)
+module namespace math="http://xqdoc.org/sample-math-lib";
+
+
+declare default function namespace "http://www.w3.org/2005/xpath-functions";
+
+(:~
+ : This variable contains the verion of the sample generic math
+ : library implemented in this module.
+ :)
+declare variable $math:MATH-VERSION as xs:string { "1.0" };
+
+(:~
+ : Add two numbers.
+ :
+ : @param $operand1 first operand.
+ : @param $operand2 second operand.
+ : @return result of the addition operation.
+ :)
+declare function add-operands($operand1 as xs:integer,
+                              $operand2 as xs:integer)
+as xs:integer
+{
+    let $sum := $operand1 + $operand2 (: add the values :)
+    return
+        $sum
+};
+
+(:~
+ : Subtract two numbers.
+ :
+ : @param $operand1 first operand.
+ : @param $operand2 second operand.
+ : @return result of the subtraction operation.
+ :)
+declare function subtract-operands($operand1 as xs:integer,
+                                   $operand2 as xs:integer)
+as xs:integer
+{
+    let $difference := $operand1 - $operand2 (: subtract the values :)
+    return
+        $difference
+};
+
+(:~
+ : Multiply two numbers.
+ :
+ : @param $operand1 first operand.
+ : @param $operand2 second operand.
+ : @return result of the multiplication operation.
+ :)
+declare function multiply-operands($operand1 as xs:integer,
+                                   $operand2 as xs:integer)
+as xs:integer
+{
+    let $product := $operand1 * $operand2 (: multiply the values :)
+    return
+        $product
+};
+
+(:~
+ : Divide two numbers.
+ :
+ : @param $operand1 first operand.
+ : @param $operand2 second operand.
+ : @return result of the division operation.
+ :)
+declare function divide-operands($operand1 as xs:integer,
+                                 $operand2 as xs:integer)
+as xs:integer
+{
+    let $quotient := $operand1 div $operand2 (: divide the values :)
+    return
+        $quotient
+};</programlisting>
+        </informalexample>
+    </appendix>
+    <appendix>
+        <title>Appendix C - Sample RestXQ Library Module</title>
+        <para></para>
+        <informalexample>
+            <programlisting>xquery version "1.0-ml";
+(:
+ : Module Name: products-xqrs.xqy
+ :
+ : Module Version: 1.0
+ :
+ : Date: 01/03/2019
+ :
+ : Copyright (c) 2018. Example Corporation
+ :
+ : Proprietary
+ : Extensions: MarkLogic
+ :
+ : XQuery
+ : Specification March 2017
+ :
+ : Module Overview: products API controller
+ :
+ :)
+(:~
+ : This module is a skinny controller for the products API
+ :
+ : @author John Q. Public
+ : @since January 3, 2019
+ : @version 0.1
+ :)
+module namespace products = "http://ama-assn.org/xqrs/products";
+
+declare namespace rest = "http://exquery.org/ns/restxq";
+declare namespace http = "http://expath.org/ns/http-client";
+
+(:~
+ : Retrieve a product by id
+ :
+ : @param $productId      The product identifier
+ : @custom:openapi-tag product
+ : @return  Request status
+ :)
+declare
+  %rest:path("/v1/products/{$productId}")
+  %rest:GET
+  %rest:produces("application/xml")
+function products:get-product($productId as xs:string)
+as node()+
+{
+  &lt;rest:response>
+    &lt;http:response status="200" message="Success"/>
+  &lt;/rest:response>
+};
+
+(:~
+ : Update a product (create new revision)
+ :
+ : @param $submitterName  The submitter name
+ : @param $doc            The product XML record
+ : @custom:openapi-tag product
+ : @param $versionTimestamp  A user-defined, minute-precision timestamp of form 19700101-0000
+ : @return  Request status
+ :)
+declare
+  %rest:path("/v1/products/{$productId}")
+  %rest:PUT("{$doc}")
+  %rest:produces("application/xml")
+  %xdmp:update
+function products:update-product($doc as document-node(), $submitter as xs:string, $versionTimestamp as xs:string, $productId as xs:string)
+as node()+
+{
+  &lt;rest:response>
+    &lt;http:response status="200" message="Success"/>
+  &lt;/rest:response>
+};
+
+(:~
+ : Create a new product
+ :
+ : @param $submitterName  The submitter name
+ : @param $versionTimestamp  A user-defined, minute-precision timestamp of form 19700101-0000
+ : @custom:openapi-tag product
+ : @return  Request status
+ :)
+declare
+  %rest:path("/v1/products")
+  %rest:POST("{$doc}")
+  %rest:query-param-1("submitterName", "{$submitterName}")
+  %rest:query-param-2("versionTimestamp", "{$versionTimestamp}")
+  %rest:produces("application/xml")
+  %xdmp:update
+function products:create-product($doc as document-node(), $submitterName as xs:string, $versionTimestamp as xs:string)
+as node()+
+{
+  &lt;rest:response>
+    &lt;http:response status="201" message="Created"/>
+  &lt;/rest:response>
+};
+
+(:~
+ : Delete a product (i.e., flag as inactive; will not result in a physical delete)
+ :
+ : @param $submitterName  The submitter name
+ : @custom:openapi-tag product
+ : @return  Request status
+ :)
+declare
+  %rest:path("/v1/products/{$productId}")
+  %rest:DELETE
+  %rest:query-param-1("submitterName", "{$submitterName}")
+  %rest:produces("application/xml")
+  %xdmp:update
+function products:delete-product($productId as xs:string, $submitterName as xs:string)
+as node()+
+{
+  &lt;rest:response>
+    &lt;http:response status="204" message="No Content"/>
+  &lt;/rest:response>
+};
+</programlisting>
+        </informalexample>
+    </appendix>
+    <appendix>
+        <title>Appendix D - Sample MarkLogic Services Library Module</title>
+        <para></para>
+        <informalexample>
+            <programlisting>xquery version "1.0-ml";
+
+(:~
+# Introduction
+
+This module retrieves an xqDoc document based on the query parameter `rs:module`.  
+It then transforms that XML document to it's JSON equivalent for displaying
+in a Polymer 3 webpage.
+@author Loren Cahlander
+@version 1.0
+@since 1.0
+ :)
+module namespace xq = "http://marklogic.com/rest-api/resource/xqdoc";
+import module namespace json="http://marklogic.com/xdmp/json" at "/MarkLogic/json/json.xqy";
+
+declare namespace rapi = "http://marklogic.com/rest-api";
+ 
+declare namespace xqdoc="http://www.xqdoc.org/1.0";
+
+(:~ 
+ :  This variable defines the name for the xqDoc collection.
+ :  The xqDoc XML for all modules should be stored into the
+ :  XML database with this collection value.
+ :)
+declare variable $xq:XQDOC_COLLECTION as xs:string := "xqdoc"; 
+
+(:~
+  Gets the xqDoc of a module as JSON
+  @param $context An object containing service request context information
+  @param $params  An object containing extension-specific parameter values supplied by the client
+  @author Loren Cahlander
+  @version 1.0
+  @since 1.0
+  @custom:openapi
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/xml": {
+                "schema": {
+                  "example": "&lt;status>online&lt;/status>"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "GET_xqdoc",
+        "parameters": [
+          {
+            "name": "module",
+            "in": "query",
+            "description": "Get the xqDoc module based on the URI of the module.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+ :)
+declare function xq:get(
+  $context as map:map,
+  $params  as map:map
+  ) as document-node()*
+{
+  ...
+};
+
+(:~
+ @param $context An object containing service request context information
+ @param $params  An object containing extension-specific parameter values supplied by the client
+ @param $input The data from the request body
+ @author Loren Cahlander
+ @version 1.0
+ @since 1.0
+ @custom:openapi-ignore Yes
+ :)
+declare function xq:put(
+  $context as map:map,
+  $params  as map:map,
+  $input   as document-node()*
+  ) as document-node()?
+{
+  xdmp:log("PUT called")
+};
+
+(:~
+ @param $context An object containing service request context information
+ @param $params  An object containing extension-specific parameter values supplied by the client
+ @param $input The data from the request body
+ @author Loren Cahlander
+ @version 1.0
+ @since 1.0
+ @custom:openapi-ignore Yes
+ :)
+declare %rapi:transaction-mode("update") function xq:post(
+  $context as map:map,
+  $params  as map:map,
+  $input   as document-node()*
+  ) as document-node()*
+{
+  xdmp:log("POST called")
+};
+
+(:~
+ @param $context An object containing service request context information
+ @param $params  An object containing extension-specific parameter values supplied by the client
+ @author Loren Cahlander
+ @version 1.0
+ @since 1.0
+ @custom:openapi-ignore Yes
+ :)
+declare function xq:delete(
+  $context as map:map,
+  $params  as map:map
+  ) as document-node()?
+{
+  xdmp:log("DELETE called")
+};
+</programlisting>
+        </informalexample>
+    </appendix>
+    <appendix>
+        <title>Appendix E - Sample RXQ Library Module</title>
+        <para></para>
+        <informalexample>
+            <programlisting></programlisting>
+        </informalexample>
+    </appendix>
+</article>
